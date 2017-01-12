@@ -5,7 +5,7 @@ import init.avc.rc
 import init.wireless.rc
 import init.modem.rc
 import init.wifi.rc
-#import init.widi.rc
+import init.widi.rc
 import init.platform.usb.rc
 import init.wl128x.rc
 import init.gps.rc
@@ -24,8 +24,8 @@ on init
     mkdir /storage/emulated 0555 root root
 
     export EXTERNAL_STORAGE /storage/sdcard0
-    #export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
-    #export EMULATED_STORAGE_TARGET /storage/emulated
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
 
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
@@ -80,8 +80,8 @@ on boot
 #   Example usage: To set AAC and MP3 offload, value to be set is 300
 
     setprop lpa.tunnelling.enable 300
-    setprop offload.min.file.duration.secs 20
-    setprop offload.compress.device 3
+    setprop offload.min.file.duration.secs 0
+    setprop offload.compress.device 0
     setprop audio.device.name K5
 
 #  Enable deep buffer property for CTP
@@ -196,24 +196,20 @@ on post-fs
 # daemon will drop to user/group system/media_rw after initializing
 # underlying files in /data/media will be created with user and group media_rw (1023)
 service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
-    class late_start
-	disabled
+    class main
 
 service fg_conf /system/bin/fg_conf -w
     group system
     oneshot
-    disabled
 
 # add by zhongwei1@lenovo.com for the jcommand
 service jcommand /system/bin/sh /system/bin/jcommand.sh
     user root
     class main
-    disabled
     oneshot
 
 service copyaplog /system/bin/sh /system/bin/copy_aplog.sh
     class main
-    disabled
     oneshot
 
 on property:ro.debuggable=1
