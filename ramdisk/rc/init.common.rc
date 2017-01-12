@@ -21,9 +21,9 @@ on boot
     chown system system /dev/pvr_sync
     chmod 666 /dev/pvr_sync
 
-#   chown system system /dev/dri/card0
-#   chmod 0666 /dev/dri/card0
-#   symlink /dev/dri/card0 /dev/card0
+    chown system system /dev/dri/card0
+    chmod 0666 /dev/dri/card0
+    symlink /dev/dri/card0 /dev/card0
 
     # IMG Graphics specific setup. See also "service pvrsrvctl"
     # The permissions below should be tighter.
@@ -37,7 +37,7 @@ on boot
     chmod 0664 /sys/class/backlight/psb-bl/actual_brightness
 
     #Change mmc queue nr_requests from 128 to 32 to reduce write latencies
-    write /sys/block/mmcblk0/queue/nr_requests 32
+    write /sys/block/mmcblk0/queue/nr_requests 128
 
 
 # Change TCP Net-Core buffers sizes to improve cellular data throughput
@@ -46,7 +46,7 @@ on boot
      write /proc/sys/net/core/wmem_max 1048576
 
     #Set freezing timeout value as 2000ms
-    write /sys/power/pm_freeze_timeout 2000
+    write /sys/power/pm_freeze_timeout 0
 
 on fs
     mkdir /factory 0775 system system
@@ -69,10 +69,10 @@ on post-fs-data
 
     # Set this property to force the camera shutter sound to play on speaker
     # this value's position is changed, not defined at here any more, zhusf
-    # setprop ro.camera.sound.forced 1
+    setprop ro.camera.sound.forced 0
 
     # Set this property to avoid fm rx to be muted
-    setprop ro.fmrx.sound.forced 1
+    setprop ro.fmrx.sound.forced 0
 
     # Set this property to enable Thermal service
     setprop persist.service.thermal 1
