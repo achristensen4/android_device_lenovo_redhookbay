@@ -1,12 +1,12 @@
 on init
     # add widi directory
     mkdir /data/widi 0770 wifi wifi
-    #insmod /lib/modules/fmdrv_chr.ko
+    insmod /lib/modules/fmdrv_chr.ko
 
     insmod /lib/modules/ipv6.ko
 
 #  Permissions for FM Radio
-   # chmod 0777 /dev/tifm
+   chmod 0777 /dev/tifm
 
 on post-fs-data
     mkdir /data/misc/dhcp 0770 dhcp wifi
