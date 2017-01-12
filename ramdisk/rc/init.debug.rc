@@ -3,16 +3,16 @@ on init
     # Export gcov variables to enable code coverage on mobile
     export GCOV_PREFIX /data
     export GCOV_PREFIX_STRIP 1
-    write /proc/sys/kernel/kptr_restrict 2
+    write /proc/sys/kernel/kptr_restrict 0
 on early-boot
     chown system log /logs
     chmod 0770 /logs
 # enable core dump function when application crash
-#    setrlimit 4 -1 -1
-#    mkdir /logs/core
-#    chown root log /logs/core
-#    chmod 0750 /logs/core
-#    write /proc/sys/kernel/core_pattern /logs/core/%t_%e_%p.core
+setrlimit 4 -1 -1
+mkdir /logs/core
+chown root log /logs/core
+chmod 0750 /logs/core
+write /proc/sys/kernel/core_pattern /logs/core/%t_%e_%p.core
 
 on post-fs
     mkdir /data/tombstones 0755 system system
@@ -106,61 +106,48 @@ on property:persist.service.memmonitor.on=0
 
 # crash and log services
 service crashlogd /system/bin/crashlogd
-    class late_start
+    class main
 
 service ap_logfs /system/bin/logcat -b system -b events -b main -b radio -n 10 -r 5000 -v threadtime -f /logs/aplogs/aplog
     class main
-    disabled
 
 service apk_logfs /system/bin/logcat -b kernel -n 10 -r 5000 -v threadtime -f /logs/kernellogs/kernellog
     class main
-    disabled
 
 service apk_logsd /system/bin/logcat -b system -b events -b main -b radio -b kernel -n 20 -r 5000 -v threadtime -f /sdcard/aplog
-    disabled
 
 service ap_logsd /system/bin/logcat -b system -b events -b main -b radio -n 20 -r 5000 -v threadtime -f /sdcard/aplog
-    disabled
 
 service profile_stop /system/bin/pytimechart-record stop
-    disabled
     oneshot
 
 service profile1_init /system/bin/pytimechart-record start_profile1
-    disabled
     oneshot
 
 service profile1_rest /system/bin/pytimechart-record restart_profile1
-    disabled
     oneshot
 
 service profile2_init /system/bin/pytimechart-record start_profile2
-    disabled
     oneshot
 
 service profile2_rest /system/bin/pytimechart-record restart_profile2
-    disabled
     oneshot
 
 service profile_power /system/bin/power-record
-    disabled
     oneshot
 
 service memmonitor /system/bin/memmonitor.sh
-    disabled
     oneshot
 
 # LogConfig service
 service logconfig /system/bin/logconfig
     class main
     socket logconfig stream 0660 root system
-    disabled
     oneshot
 
 # started by device/intel/log_capture/crashlog
 service logsystemstate /system/bin/dumpstate_dropbox.sh -v
     class main
-    disabled
     oneshot
 
 import init.dump.rc
